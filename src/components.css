@@ -20,13 +20,14 @@
   background: rgba(11, 15, 25, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: none;
   padding: 0.75rem 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
 }
 
 body.light-theme .navbar-header.scrolled {
   background: rgba(255, 255, 255, 0.88);
+  border-bottom: none;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
