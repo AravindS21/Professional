@@ -38,7 +38,19 @@ export default function Projects() {
           {projectsData.map((project) => (
             <div key={project.id} className="project-card glass-card">
               {/* Card Banner Image / Preview */}
-              <div className="project-banner-wrapper">
+              <div 
+                className="project-banner-wrapper"
+                onClick={() => setSelectedProject(project)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedProject(project);
+                  }
+                }}
+                title={`Click to view ${project.title} architecture blueprint`}
+              >
                 <img 
                   src={project.banner} 
                   alt={project.title} 
@@ -47,7 +59,10 @@ export default function Projects() {
                 />
                 <div className="project-banner-overlay">
                   <button 
-                    onClick={() => setSelectedProject(project)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProject(project);
+                    }}
                     className="preview-badge-btn"
                   >
                     <ZoomIn size={16} />

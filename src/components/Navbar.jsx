@@ -40,6 +40,26 @@ export default function Navbar({ theme, toggleTheme }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile drawer on desktop resize or Escape key press
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   const navLinks = [
     { name: 'About', href: '#about' },
     { name: 'Skills', href: '#skills' },
@@ -118,42 +138,55 @@ export default function Navbar({ theme, toggleTheme }) {
             className="mobile-menu-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Mobile Menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Drawer */}
+      {/* Mobile Dropdown Drawer & Backdrop */}
       {mobileMenuOpen && (
-        <div className="mobile-drawer">
-          <ul className="mobile-link-list">
-            {navLinks.map((link) => (
-              <li key={link.name}>
+        <>
+          <div 
+            className="mobile-backdrop" 
+            onClick={() => setMobileMenuOpen(false)} 
+            aria-hidden="true" 
+          />
+          <div 
+            className="mobile-drawer" 
+            role="dialog" 
+            aria-modal="true" 
+            aria-label="Mobile Navigation Menu"
+          >
+            <ul className="mobile-link-list">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className={`mobile-nav-link ${activeSection === link.href.substring(1) ? 'active' : ''}`}
+                  >
+                    <span>{link.name}</span>
+                    <ArrowUpRight size={16} />
+                  </a>
+                </li>
+              ))}
+              <li className="mobile-resume-li">
                 <a
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className={`mobile-nav-link ${activeSection === link.href.substring(1) ? 'active' : ''}`}
+                  href={personalInfo.resumePath}
+                  download="Aravind_S_Resume.pdf"
+                  className="btn-primary mobile-resume-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  <span>{link.name}</span>
-                  <ArrowUpRight size={16} />
+                  <FileDown size={18} />
+                  Download Resume (PDF)
                 </a>
               </li>
-            ))}
-            <li className="mobile-resume-li">
-              <a
-                href={personalInfo.resumePath}
-                download="Aravind_S_Resume.pdf"
-                className="btn-primary mobile-resume-btn"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FileDown size={18} />
-                Download Resume (PDF)
-              </a>
-            </li>
-          </ul>
-        </div>
+            </ul>
+          </div>
+        </>
       )}
     </header>
   );
